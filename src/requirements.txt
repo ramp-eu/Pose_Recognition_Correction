@@ -1,7 +1,0 @@
-openvino
-openvino-dev
-pyrealsense2
-numpy
-opencv-python
-scikit-learn
-scikit-spatial

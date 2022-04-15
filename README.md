@@ -1,97 +1,60 @@
-# <TITLE>
+# Pose Recognition and Correction #
 
-[![License: MIT](https://img.shields.io/github/license/ramp-eu/TTE.project1.svg)](https://opensource.org/licenses/MIT)
-[![Docker badge](https://img.shields.io/docker/pulls/ramp-eu/TTE.project1.svg)](https://hub.docker.com/r/<org>/<repo>/)
-<br/>
-[![Documentation Status](https://readthedocs.org/projects/tte-project1/badge/?version=latest)](https://tte-project1.readthedocs.io/en/latest/?badge=latest)
-[![CI](https://github.com/ramp-eu/TTE.project1/workflows/CI/badge.svg)](https://github.com/ramp-eu/TTE.project1/actions?query=workflow%3ACI)
-[![Coverage Status](https://coveralls.io/repos/github/ramp-eu/TTE.project1/badge.svg?branch=master)](https://coveralls.io/github/ramp-eu/TTE.project1?branch=master)
-[![Codacy grade](https://img.shields.io/codacy/grade/99310c5c4332439197633912a99d2e3c)](https://app.codacy.com/manual/jason-fox/TTE.project1)
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4187/badge)](https://bestpractices.coreinfrastructure.org/projects/4187)
+## Background ##
+The cognitive HRI package supports Human Machine Collaboration (HMC) aiming at combining human flexibility with repeatability of automated factory entities, such as cobots, for improving working conditions while pursuing better performances.
+So, what does this means, in simple words?
+There will be an analysis of how a human, a worker, works by using one or more pieces of equipment at the shopfloor.
+The goal of this analysis is to provide an improved way of working.
+Let’s see the following example: SUPSI and GESTALT provide software packages that monitor specific human attributes in order to detect both worker perceived exertion level (detected by the fatigue monitoring system,FAMS) and posture (detected by the Ergonomic package, PRaC).
+This information is the input for a further decision-making package, the intervention manager, in order to re-organize the working cell for improving worker conditions and getting better performances.
+So, long story short, based on the example in hand, cognitive HRI improves the working process by improving the worker’s physical conditions and vice versa.
 
-```text
+### Objective ###
+What is the submodule for?
 
-The Badges above demonstrate testing, code coverage
-and commitment to coding standards (since the code is linted on commit).
+By applying image processing algorithms to visual data we are able to compute certain postures key figures, like the angles between arms and upper body, indicating the physical stress level of the observed working situation.
+Our solution focusses explicitly on a GDPR-compliant implementation, since assessing individuals and working situations with cameras can be felt an invasion of privacy.
+The resulting, anonymized working posture assessment can then be used to organize the work place in a way that individual adjustments ensure less physical stress and increase the workers health.
 
-The links need to be amended to point to the correct repo.
 
-Sign up for:
+## Install ##
+Installation must meet certain criteria to be runnable.
 
-- CI Test system - e.g. GitHub Actions, Travis
-- A Documentation website - e.g. ReadTheDocs
-- Static Code Analysis tool - e.g. Codacy
-- CII Best Practices https://bestpractices.coreinfrastructure.org
+### hardware requirements ###
+Installation relies on having a RBGD-camera plugged into the computer running the software.
+The program is developed using an [Intel RealSense D435](https://www.intelrealsense.com/depth-camera-d435/), which means using one is already tested.
 
-Only CII Best Practices (and its badge) is mandatory. Any equivalent public automated tools for the other three may be used.
+### software requirements ###
+The module is developed using docker and docker-compose.
+All necessary software is included into the containers and no additional software is needed.
 
-Note that the CII Best Practices questionaire will request evidence of tooling used.
+## Usage ##
+You can start the software with supplied docker-compose files.
+As the module consists of several parts, they need to be started independently.
+As usual with docker-based deployments you will have to fetch the images from a registry or build them on your own.
 
+start orion-broker from project root:
+```
+docker-compose -f orion_broker/docker-compose.yml up
 ```
 
-```text
-One or two sentence preamble describing the element
+start the backend which reads images from a camera and computes the pose score
+```
+docker-compose -f backend/docker-compose.yml up
 ```
 
-## Contents
-
-- [<TITLE>](#title)
-  - [Contents](#contents)
-  - [Background](#background)
-  - [Install](#install)
-  - [Usage](#usage)
-  - [API](#api)
-  - [Testing](#testing)
-  - [License](#license)
-
-## Background
-
-```text
-Background information and links to relevant terms
+start the ui for local visualization and testing orion-broker connectivity
 ```
-
-## Install
-
-```text
-How to install the component
-
-Information about how to install the <Name of component> can be found at the corresponding section of the
-[Installation & Administration Guide](docs/installationguide.md).
-
-A `Dockerfile` is also available for your use - further information can be found [here](docker/README.md)
-
+docker-compose -f ui/docker-compose.yml up
 ```
+## Testing ##
+You can test the module with a local webcam.
+Please be aware that computing a three-dimensional score from two-dimensional images involves estimating and therefore is of limited accuracy.
+Therefore, we suggest the usage of rgbd-cameras and computing the score on the measured three-dimensional data.
 
-## Usage
+## Feedback ##
+This module is intended to be used as is and is maintained internally.
+Please do not file issues or bug reports as this repo is only mirrored from private repos.
 
-```text
-How to use the component
-
-Information about how to use the <Name of component> can be found in the [User & Programmers Manual](docs/usermanual.md).
-
-The following features are listed as [deprecated](docs/deprecated.md).
-```
-
-## API
-
-```text
-Definition of the API interface:
-
-Information about the API of  the <Name of component> can be found in the [API documentation](docs/api.md).
-
-```
-
-## Testing
-
-```text
-How to test the component
-
-For performing a basic end-to-end test, you have to follow the step below. A detailed description about how to run tests can be found [here].
-
-> npm test
-
-```
-
-## License
-
-[MIT](LICENSE) © <TTE>
+## Licence ##
+This module and all file in here are licensed under *MIT License* as can be seen in [LICENSE.md](./LICENSE.md).
