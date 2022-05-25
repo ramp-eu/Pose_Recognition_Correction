@@ -113,18 +113,18 @@ def get_ergonomics_stats(points_3d):
     knee_angles = compute_knee_angles(points_3d)
     leg_angles = compute_upper_leg_angles(points_3d)
 
-    print('----------------------------------------------------------------------------------')
-    print(f'Body angle: {body_angle}')
-    print(f'Arm angle: {arm_angles}')
-    print(f'Knee angle: {knee_angles}')
-    print('----------------------------------------------------------------------------------')
+    # print('----------------------------------------------------------------------------------')
+    # print(f'Body angle: {body_angle}')
+    # print(f'Arm angle: {arm_angles}')
+    # print(f'Knee angle: {knee_angles}')
+    # print('----------------------------------------------------------------------------------')
 
     return {
-        'BODY' : body_angle,
-        'UL' : arm_angles,
-        'BL': lower_arm_angles,
-        'LL' : knee_angles,
-        'LB': leg_angles
+        'BODY_ANGLE': body_angle,
+        'SHOULDER_ANGLE': arm_angles,
+        'ELBOW_ANGLE': lower_arm_angles,
+        'HIP_ANGLE': leg_angles,
+        'KNEE_ANGLE': knee_angles
     }
 
 
@@ -139,73 +139,73 @@ body_edges = np.array(
 
 def visualise_ergonomics(img, joints_2d, ergonomics_stats):
     body_edges = [
-        ('BODY', 'NECK', 'L_HIP'),
-        ('BODY', 'NECK', 'R_HIP'),
-        ('BODY', 'L_HIP', 'R_HIP'),
-        ('UL', 'L_SHOULDER', 'L_ELBOW'),
-        ('UL', 'R_SHOULDER', 'R_ELBOW'),
-        ('BL', 'R_ELBOW', 'R_WRIST'),
-        ('BL', 'L_ELBOW', 'L_WRIST'),
-        ('LB', 'L_HIP', 'L_KNEE'),
-        ('LL', 'L_KNEE', 'L_ANKLE'),
-        ('LB', 'R_HIP', 'R_KNEE'),
-        ('LL', 'R_KNEE', 'R_ANKLE'),
+        ('BODY_ANGLE', 'NECK', 'L_HIP'),
+        ('BODY_ANGLE', 'NECK', 'R_HIP'),
+        ('BODY_ANGLE', 'L_HIP', 'R_HIP'),
+        ('SHOULDER_ANGLE', 'L_SHOULDER', 'L_ELBOW'),
+        ('SHOULDER_ANGLE', 'R_SHOULDER', 'R_ELBOW'),
+        ('ELBOW_ANGLE', 'R_ELBOW', 'R_WRIST'),
+        ('ELBOW_ANGLE', 'L_ELBOW', 'L_WRIST'),
+        ('HIP_ANGLE', 'L_HIP', 'L_KNEE'),
+        ('KNEE_ANGLE', 'L_KNEE', 'L_ANKLE'),
+        ('HIP_ANGLE', 'R_HIP', 'R_KNEE'),
+        ('KNEE_ANGLE', 'R_KNEE', 'R_ANKLE'),
     ]
 
     for joint_type, joint1, joint2 in body_edges:
         color = (255,255,255)
-        if joint_type == 'BODY':
-            if ergonomics_stats['BODY'] is not None:
-                value = np.clip(ergonomics_stats['BODY'], 0, 30) / 30
+        if joint_type == 'BODY_ANGLE':
+            if ergonomics_stats['BODY_ANGLE'] is not None:
+                value = np.clip(ergonomics_stats['BODY_ANGLE'], 0, 30) / 30
                 value = value * 127 + 127
                 value = np.array([[value]], dtype=np.uint8)
                 color = cv2.applyColorMap(value, cv2.COLORMAP_JET)[0,0,:].tolist()
 
-        elif joint_type == 'UL':
-            if ergonomics_stats['UL'][0] is not None and joint1 == 'L_SHOULDER':
-                value = np.clip(ergonomics_stats['UL'][0], 0, 150) / 150
+        elif joint_type == 'SHOULDER_ANGLE':
+            if ergonomics_stats['SHOULDER_ANGLE'][0] is not None and joint1 == 'L_SHOULDER':
+                value = np.clip(ergonomics_stats['SHOULDER_ANGLE'][0], 0, 150) / 150
                 value = value * 127 + 127
                 value = np.array([[value]], dtype=np.uint8)
                 color = cv2.applyColorMap(value, cv2.COLORMAP_JET)[0,0,:].tolist()
 
-            if ergonomics_stats['UL'][1] is not None and joint1 == 'R_SHOULDER':
-                value = np.clip(ergonomics_stats['UL'][1], 0, 150) / 150
+            if ergonomics_stats['SHOULDER_ANGLE'][1] is not None and joint1 == 'R_SHOULDER':
+                value = np.clip(ergonomics_stats['SHOULDER_ANGLE'][1], 0, 150) / 150
                 value = value * 127 + 127
                 value = np.array([[value]], dtype=np.uint8)
                 color = cv2.applyColorMap(value, cv2.COLORMAP_JET)[0,0,:].tolist()
-        elif joint_type == 'BL':
-            if ergonomics_stats['BL'][0] is not None and joint1 == 'L_ELBOW':
-                value = np.clip(ergonomics_stats['BL'][0], 0, 150) / 150
-                value = value * 127 + 127
-                value = np.array([[value]], dtype=np.uint8)
-                color = cv2.applyColorMap(value, cv2.COLORMAP_JET)[0,0,:].tolist()
-
-            if ergonomics_stats['BL'][1] is not None and joint1 == 'R_ELBOW':
-                value = np.clip(ergonomics_stats['BL'][1], 0, 150) / 150
-                value = value * 127 + 127
-                value = np.array([[value]], dtype=np.uint8)
-                color = cv2.applyColorMap(value, cv2.COLORMAP_JET)[0,0,:].tolist()
-        elif joint_type == 'LL':
-            if ergonomics_stats['LL'][0] is not None and joint1 in ['L_KNEE', 'L_ANKLE']:
-                value = np.clip(abs(180 - ergonomics_stats['LL'][0]),0, 90) / 90
+        elif joint_type == 'ELBOW_ANGLE':
+            if ergonomics_stats['ELBOW_ANGLE'][0] is not None and joint1 == 'L_ELBOW':
+                value = np.clip(ergonomics_stats['ELBOW_ANGLE'][0], 0, 150) / 150
                 value = value * 127 + 127
                 value = np.array([[value]], dtype=np.uint8)
                 color = cv2.applyColorMap(value, cv2.COLORMAP_JET)[0,0,:].tolist()
 
-            if ergonomics_stats['LL'][1] is not None and joint2 in ['R_KNEE', 'R_ANKLE']:
-                value = np.clip(abs(180 - ergonomics_stats['LL'][1]),0, 90) / 90
+            if ergonomics_stats['ELBOW_ANGLE'][1] is not None and joint1 == 'R_ELBOW':
+                value = np.clip(ergonomics_stats['ELBOW_ANGLE'][1], 0, 150) / 150
+                value = value * 127 + 127
+                value = np.array([[value]], dtype=np.uint8)
+                color = cv2.applyColorMap(value, cv2.COLORMAP_JET)[0,0,:].tolist()
+        elif joint_type == 'KNEE_ANGLE':
+            if ergonomics_stats['KNEE_ANGLE'][0] is not None and joint1 in ['L_KNEE', 'L_ANKLE']:
+                value = np.clip(abs(180 - ergonomics_stats['KNEE_ANGLE'][0]),0, 90) / 90
+                value = value * 127 + 127
+                value = np.array([[value]], dtype=np.uint8)
+                color = cv2.applyColorMap(value, cv2.COLORMAP_JET)[0,0,:].tolist()
+
+            if ergonomics_stats['KNEE_ANGLE'][1] is not None and joint2 in ['R_KNEE', 'R_ANKLE']:
+                value = np.clip(abs(180 - ergonomics_stats['KNEE_ANGLE'][1]),0, 90) / 90
                 value = value * 127 + 127
                 value = np.array([[value]], dtype=np.uint8)
                 color = cv2.applyColorMap(value, cv2.COLORMAP_JET)[0,0,:].tolist()
         else:
-            if ergonomics_stats['LB'][0] is not None and joint1 in ['L_HIP', 'L_KNEE']:
-                value = np.clip(abs(180 - ergonomics_stats['LB'][0]),0, 90) / 90
+            if ergonomics_stats['HIP_ANGLE'][0] is not None and joint1 in ['L_HIP', 'L_KNEE']:
+                value = np.clip(ergonomics_stats['HIP_ANGLE'][0], 0, 150) / 150
                 value = value * 127 + 127
                 value = np.array([[value]], dtype=np.uint8)
                 color = cv2.applyColorMap(value, cv2.COLORMAP_JET)[0,0,:].tolist()
 
-            if ergonomics_stats['LB'][1] is not None and joint2 in ['R_HIP', 'R_KNEE']:
-                value = np.clip(abs(180 - ergonomics_stats['LB'][1]),0, 90) / 90
+            if ergonomics_stats['HIP_ANGLE'][1] is not None and joint2 in ['R_HIP', 'R_KNEE']:
+                value = np.clip(ergonomics_stats['HIP_ANGLE'][1], 0, 150) / 150
                 value = value * 127 + 127
                 value = np.array([[value]], dtype=np.uint8)
                 color = cv2.applyColorMap(value, cv2.COLORMAP_JET)[0,0,:].tolist()

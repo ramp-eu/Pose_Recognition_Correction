@@ -16,19 +16,19 @@ def check_postures_in_bounds(posture_limits, posture):
 
     if 'body_angle' in posture_limits.keys():
         is_body_angle_in_bound = check_in_bounds(posture_limits['body_angle'],
-                                                 posture['body_angle'])
+                                                 posture['BODY_ANGLE'])
     if 'left_arm_angles' in posture_limits.keys():
         is_left_arm_angle_in_bound = check_in_bounds(
-            posture_limits['left_arm_angles'], posture['arm_angles'][0])
+            posture_limits['left_arm_angles'], posture['SHOULDER_ANGLE'][0])
     if 'right_arm_angles' in posture_limits.keys():
         is_right_arm_angle_in_bound = check_in_bounds(
-            posture_limits['right_arm_angles'], posture['arm_angles'][1])
+            posture_limits['right_arm_angles'], posture['SHOULDER_ANGLE'][1])
     if 'left_knee_angles' in posture_limits.keys():
         is_left_knee_angle_in_bound = check_in_bounds(
-            posture_limits['left_knee_angles'], posture['knee_angles'][0])
+            posture_limits['left_knee_angles'], posture['KNEE_ANGLE'][0])
     if 'right_knee_angles' in posture_limits.keys():
         is_right_knee_angle_in_bound = check_in_bounds(
-            posture_limits['right_knee_angles'], posture['knee_angles'][1])
+            posture_limits['right_knee_angles'], posture['KNEE_ANGLE'][1])
 
     return is_body_angle_in_bound and is_left_arm_angle_in_bound and is_right_arm_angle_in_bound and is_left_knee_angle_in_bound and is_right_knee_angle_in_bound
 

@@ -9,7 +9,7 @@ services:
     devices:
       - "/dev:/dev:ro"
     privileged: true
-    command: python3 wpc.py -m models/FP16/human-pose-estimation-3d-0001.xml -use_rs false -o_url http://localhost:1026
+    command: python3 wpc.py -m models/FP16/human-pose-estimation-3d-0001.xml -use_rs true -o_url http://localhost:1026
     # command: sleep infinity
     environment:
       - PYTHONUNBUFFERED=1 # keep pythons output running
