@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  backend:
+    image: docker.ramp.eu/gestalt-pvt/pose-recognition-backend
+    network_mode: "host"
+    devices:
+      - "/dev:/dev:ro"
+    privileged: true
+    command: python3 Controller.py
+    environment:
+      - BACKEND_VISUALIZATION=1
+      - PYTHONUNBUFFERED=1 # keep pythons output running
+      - "DISPLAY" # activate graphical environment, only needed for backend debugging visualization
+      - "QT_X11_NO_MITSHM=1" # fix some QT bugs, only needed for backend debugging visualization
+    user: "1000:44" # claim being you (1000) in order to access your x11 andsl of group video (44) to access camera
+    volumes:
+      - "/tmp/.X11-unix:/tmp/.X11-unix:ro" # share your x11 socket, only needed for backend debugging visualization
+  mongo:
+    image: mongo:4.4
+    command: --nojournal
+  orion:
+    image: fiware/orion
+    links:
+      - mongo
+    ports:
+      - "1026:1026"
+    command: -dbhost mongo
+
+  ui:
+    image: docker.ramp.eu/gestalt-pvt/pose-recognition-ui
+    network_mode: "host"
+    environment:
+      - FAST_REFRESH=false
+    command: yarn start

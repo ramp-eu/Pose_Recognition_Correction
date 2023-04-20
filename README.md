@@ -1,4 +1,4 @@
-# Pose Recognition and Correction #
+# Pose Detection and Tracking #
 
 ## Background ##
 The cognitive HRI package supports Human Machine Collaboration (HMC) aiming at combining human flexibility with repeatability of automated factory entities, such as cobots, for improving working conditions while pursuing better performances.
@@ -20,36 +20,24 @@ The resulting, anonymized working posture assessment can then be used to organiz
 ## Install ##
 Installation must meet certain criteria to be runnable.
 
-### hardware requirements ###
-Installation relies on having a RBGD-camera plugged into the computer running the software.
-The program is developed using an [Intel RealSense D435](https://www.intelrealsense.com/depth-camera-d435/), which means using one is already tested.
-
 ### software requirements ###
 The module is developed using docker and docker-compose.
 All necessary software is included into the containers and no additional software is needed.
+If you want to en/disable a debugging UI you can set `BACKEND_VISUALIZATION=1/0`.
+Depending on this value you will need to share your X11 and enable `DISPLAY` environment.
+
+### hardware requirements ###
+Installation relies on having a camera plugged into the computer running the software - therefore all devices are mounted into the container.
+We tested with Azure Kinect, Intel RealSense and built-in webcams.
 
 ## Usage ##
-You can start the software with supplied docker-compose files.
-As the module consists of several parts, they need to be started independently.
-As usual with docker-based deployments you will have to fetch the images from a registry or build them on your own.
+You can start the software with supplied docker-compose file.
+As usual with docker-based deployments you will have to fetch the images from the registry.
+When visiting `localhost:3000` in your browser, you will see an interface which reads its values from the Orion Broker, so when you see changing values everything works as expected.
 
-start orion-broker from project root:
-```
-docker-compose -f orion_broker/docker-compose.yml up
-```
-
-start the backend which reads images from a camera and computes the pose score
-```
-docker-compose -f backend/docker-compose.yml up
-```
-
-start the ui for local visualization and testing orion-broker connectivity
-```
-docker-compose -f ui/docker-compose.yml up
-```
 ## Testing ##
 You can test the module with a local webcam.
-Please be aware that computing a three-dimensional score from two-dimensional images involves estimating and therefore is of limited accuracy.
+Please be aware that computing a three-dimensional score from two-dimensional images involves estimating depth and therefore is of limited accuracy.
 Therefore, we suggest the usage of rgbd-cameras and computing the score on the measured three-dimensional data.
 
 ## Feedback ##
